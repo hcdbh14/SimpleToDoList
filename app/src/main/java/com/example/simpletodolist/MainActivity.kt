@@ -7,7 +7,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.runBlocking
-import java.lang.ref.PhantomReference
 
 class MainActivity : AppCompatActivity() {
 
