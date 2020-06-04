@@ -8,7 +8,7 @@
     app:cardCornerRadius="20dp">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/addCell"
+        android:id="@+id/imageID"
         android:src="@drawable/addcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
