@@ -6,13 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
 import kotlinx.android.synthetic.main.add_cell.view.*
 import kotlinx.android.synthetic.main.task_view.view.*
-import org.w3c.dom.Text
+import kotlinx.coroutines.runBlocking
+
 
 
 class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
+    private val colors = RandomColors()
+    private var dataList = emptyArray<Task>()
+    private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
 
     override fun getItemCount() = cellList.size
 
@@ -43,7 +50,13 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
             holder.textView.text=currentItem.task
         } else {
             holder.itemView.setOnClickListener() {
-                println("pressed")
+                runBlocking {
+                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "test", colors.getRandomColor()))
+                    println(db.roomNoteDao().getTasks().size)
+                }
+                runBlocking { loadData(db) }
+                this.update(this.dataList)
+                this.dataList.reverse()
             }
         }
     }
@@ -72,5 +85,9 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
         shape.cornerRadii=floatArrayOf(30f, 30f, 30f, 30f, 30f, 30f, 30f, 30f)
         shape.setColor(backgroundColor.toInt())
         return shape
+    }
+    private suspend fun loadData(reference: RoomNoteDatabase) {
+        val data=reference.roomNoteDao().getTasks()
+        this.dataList=data
     }
 }
