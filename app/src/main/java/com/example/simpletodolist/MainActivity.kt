@@ -18,8 +18,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val db=RoomNoteDatabase.getInstance(this)
-        runBlocking { recycler_view.adapter=TaskAdapter(db.roomNoteDao().getTasks()) }
+
+        runBlocking { recycler_view.adapter=TaskAdapter(loadTasks()) }
+
         recycler_view.layoutManager=LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
 
@@ -29,5 +30,14 @@ class MainActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(v.windowToken, 0)
             false
         }
+    }
+
+    private suspend fun loadTasks() : Array<Task> {
+        val db=RoomNoteDatabase.getInstance(this)
+        var taskList=db.roomNoteDao().getTasks()
+        if (taskList.isEmpty()) {
+            taskList+=Task(0, "", RandomColors().getRandomColor())
+        }
+        return taskList
     }
 }
