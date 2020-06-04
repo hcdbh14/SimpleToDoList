@@ -7,6 +7,13 @@
     app:cardBackgroundColor="#ADD8E6"
     app:cardCornerRadius="20dp">
 
+    <EditText
+        android:id="@+id/editTextID"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        />
+
     <TextView
         android:id="@+id/taskViewID"
         android:layout_width="wrap_content"

@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -48,10 +49,14 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
             val currentItem=cellList[position]
             holder.itemView.background=roundCorners(currentItem.color)
             holder.textView.text=currentItem.task
+            holder.editText.isEnabled = false
+            if (holder.textView.text == "") {
+                holder.editText.isEnabled = true
+            }
         } else {
             holder.itemView.setOnClickListener() {
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "test", colors.getRandomColor()))
+                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor()))
                     println(db.roomNoteDao().getTasks().size)
                 }
                 runBlocking { loadData(db) }
@@ -66,11 +71,13 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
 
 
      class TaskViewHolder(TaskView: View, type: Int) : RecyclerView.ViewHolder(TaskView) {
+         lateinit var editText: EditText
          lateinit var textView: TextView
          private lateinit var imageView: ImageView
 
         init {
             if (type == 1) {
+                this.editText = TaskView.editTextID
                  this.textView = TaskView.taskViewID
             } else {
                 this.imageView = TaskView.imageID
