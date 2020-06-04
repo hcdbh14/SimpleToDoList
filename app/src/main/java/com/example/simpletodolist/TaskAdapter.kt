@@ -12,8 +12,9 @@ import kotlinx.android.synthetic.main.task_view.view.*
 import org.w3c.dom.Text
 
 
-class TaskAdapter(private var cellList: Array<Task>) :
-    RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
+    override fun getItemCount() = cellList.size
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) 1 else 2
@@ -40,11 +41,13 @@ class TaskAdapter(private var cellList: Array<Task>) :
             val currentItem=cellList[position]
             holder.itemView.background=roundCorners(currentItem.color)
             holder.textView.text=currentItem.task
+        } else {
+            holder.itemView.setOnClickListener() {
+                println("pressed")
+            }
         }
     }
 
-
-    override fun getItemCount() = cellList.size
 
 
 
