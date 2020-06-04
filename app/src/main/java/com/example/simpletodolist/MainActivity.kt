@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         runBlocking {  recycler_view.adapter=TaskAdapter(db.roomNoteDao().getTasks()) }
         recycler_view.layoutManager=LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
-        recycler_view.setOnTouchListener(this)
         recycler_view.setOnTouchListener(object:View.OnTouchListener {
 
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
