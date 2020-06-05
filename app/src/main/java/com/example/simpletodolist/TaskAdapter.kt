@@ -50,20 +50,24 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
         println(position)
         if (position != 0) {
             val currentItem=cellList[position]
+            if (currentItem.locked) {
+                holder.editText.isEnabled = false
+            }
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
 
 
             holder.editText.doAfterTextChanged {
                 runBlocking {
-                db.roomNoteDao().writeTask(Task(position + 1, holder.editText.text.toString(), currentItem.color))
+                db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), cellList[position].color, locked = true))
+                    holder.editText.isEnabled = false
             }}
 
         } else {
             holder.itemView.setOnClickListener() {
                 runBlocking { loadData(db) }
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor()))
+                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))
                 }
                 runBlocking { loadData(db) }
             }

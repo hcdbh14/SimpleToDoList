@@ -11,7 +11,8 @@ data class Task(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
     val task: String,
-    val color: Long
+    val color: Long,
+    val locked: Boolean
 )
 
 @Dao

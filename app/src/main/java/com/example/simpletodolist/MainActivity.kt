@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         val db=RoomNoteDatabase.getInstance(this)
         var taskList=db.roomNoteDao().getTasks()
         if (taskList.isEmpty()) {
-            taskList+=Task(0, "", RandomColors().getRandomColor())
+            taskList+=Task(0, "", RandomColors().getRandomColor(), locked = false)
         }
         return taskList
     }
