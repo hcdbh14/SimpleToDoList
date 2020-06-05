@@ -3,7 +3,10 @@ package com.example.simpletodolist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
@@ -23,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         recycler_view.layoutManager=LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
-
+        setListnerToRootView()
         recycler_view.setOnTouchListener { v, _ ->
             val imm=
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -39,5 +42,30 @@ class MainActivity : AppCompatActivity() {
             taskList+=Task(0, "", RandomColors().getRandomColor())
         }
         return taskList
+    }
+
+    var isOpened=false
+
+    fun setListnerToRootView() {
+        val activityRootView: View=window.decorView.findViewById(android.R.id.content)
+        activityRootView.getViewTreeObserver()
+            .addOnGlobalLayoutListener(OnGlobalLayoutListener {
+                val heightDiff: Int=
+                    activityRootView.getRootView().getHeight() - activityRootView.getHeight()
+                if (heightDiff > 1000) { // 99% of the time the height diff will be due to a keyboard.
+                    Toast.makeText(applicationContext, "Gotcha!!! softKeyboardup", 0)
+                        .show()
+
+                    if (isOpened == false) {
+
+                        //Do two things, make the view top visible and the editText smaller
+                    }
+                    isOpened=true
+                } else if (isOpened == true) {
+
+                    Toast.makeText(applicationContext, "softkeyborad Down!!!", 0).show()
+                    isOpened=false
+                }
+            })
     }
 }
