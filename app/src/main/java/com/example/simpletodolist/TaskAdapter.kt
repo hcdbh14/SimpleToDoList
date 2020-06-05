@@ -1,41 +1,45 @@
 package com.example.simpletodolist
 
 import android.graphics.drawable.GradientDrawable
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doBeforeTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
 import kotlinx.android.synthetic.main.add_cell.view.*
 import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
-import java.util.*
 
 
 class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-    private var timer = Timer()
-    private var DELAY:Long = 2000
+
     private val view = view
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
 
     override fun getItemCount() = cellList.size
     override fun getItemViewType(position: Int): Int { return if (position == 0) 1 else 2 }
+    private var isOpened=false
 
-
+    private fun listenKeyboard() {
+        val activityRootView: View=view
+        activityRootView.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                val heightDiff: Int=activityRootView.rootView.height - activityRootView.height
+                if (heightDiff > 1000) {
+                    isOpened=true
+                } else if (isOpened) {
+                    isOpened=false
+                }
+            }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-
+        listenKeyboard()
         if (viewType == 1) {
                 val addView = LayoutInflater.from(parent.context).inflate(R.layout.add_cell, parent, false)
                 return TaskViewHolder(addView, 0)
@@ -60,11 +64,13 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
             holder.editText.doAfterTextChanged {
                 runBlocking {
                 db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), cellList[position].color, locked = true))
-                    holder.editText.isEnabled = false
+                    if (!isOpened) {
+                        holder.editText.isEnabled = false
+                    }
             }}
 
         } else {
-            holder.itemView.setOnClickListener() {
+            holder.itemView.setOnClickListener {
                 runBlocking { loadData(db) }
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))

@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        runBlocking { recycler_view.adapter=TaskAdapter(loadTasks(), window.decorView.findViewById(android.R.id.content)) }
+        runBlocking { recycler_view.adapter=TaskAdapter(loadTasks(), recycler_view) }
 
         recycler_view.layoutManager=LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     var isOpened=false
 
     fun setListnerToRootView() {
-        val activityRootView: View=window.decorView.findViewById(android.R.id.content)
+        val activityRootView: View=recycler_view
         activityRootView.getViewTreeObserver()
             .addOnGlobalLayoutListener(OnGlobalLayoutListener {
                 val heightDiff: Int=
