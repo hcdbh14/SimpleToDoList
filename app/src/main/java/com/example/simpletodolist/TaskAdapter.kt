@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
@@ -101,13 +100,11 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
 
      class TaskViewHolder(TaskView: View, type: Int) : RecyclerView.ViewHolder(TaskView) {
          lateinit var editText: EditText
-         lateinit var textView: TextView
          private lateinit var imageView: ImageView
 
         init {
             if (type == 1) {
                 this.editText = TaskView.editTextID
-                 this.textView = TaskView.taskViewID
             } else {
                 this.imageView = TaskView.imageID
             }
