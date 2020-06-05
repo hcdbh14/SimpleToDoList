@@ -1,6 +1,9 @@
 package com.example.simpletodolist
 
 import android.graphics.drawable.GradientDrawable
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +14,18 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
 import kotlinx.android.synthetic.main.add_cell.view.*
 import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
-
+import java.util.*
 
 
 class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    private var timer = Timer()
+    private var DELAY:Long = 2000
     private val view = view
     private val colors = RandomColors()
     private var dataList = emptyArray<Task>()
@@ -29,36 +35,6 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) 1 else 2
-    }
-
-
-    var isOpened=false
-
-    fun listenToKeyboard(typedText: String, position: Int, color: Long) {
-        val activityRootView: View= view
-        activityRootView.getViewTreeObserver()
-            .addOnGlobalLayoutListener(ViewTreeObserver.OnGlobalLayoutListener {
-                val heightDiff: Int=
-                    activityRootView.getRootView().getHeight() - activityRootView.getHeight()
-                if (heightDiff > 1000) { // 99% of the time the height diff will be due to a keyboard.
-                    println("open")
-
-                    if (isOpened == false) {
-
-                        //Do two things, make the view top visible and the editText smaller
-                    }
-                    isOpened=true
-                } else if (isOpened == true) {
-                    runBlocking { db.roomNoteDao().writeTask(Task(position, typedText, color))
-                        println(typedText)
-                        println(color)
-                        println(position)
-                        println("closed")
-                    }
-
-                    isOpened=false
-                }
-            })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -71,27 +47,35 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
             return TaskViewHolder(itemView, 1)
         }
     }
-
-
+    
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         if (position != 0) {
             val currentItem=cellList[position]
             holder.itemView.background=roundCorners(currentItem.color)
-            holder.textView.text=currentItem.task
-            holder.editText.isEnabled = false
-            if (holder.textView.text == "") {
-                holder.editText.isEnabled = true
-                holder.editText.doAfterTextChanged {
-                    listenToKeyboard(holder.editText.text.toString(), position, currentItem.color)
+            holder.editText.setText(currentItem.task)
+
+            holder.editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    Log.e("TAG","timer start")
+                    timer = Timer()
+                    timer.schedule(object : TimerTask() {
+                        override fun run() {
+                            runBlocking { db.roomNoteDao().writeTask(Task(position + 1, holder.editText.text.toString(), currentItem.color)) }
+                        }
+                    }, DELAY)
                 }
 
-//              holder.editText.setOnClickListener() {
-//                val textToSave = holder.editText.text.toString()
-//                runBlocking { db.roomNoteDao().writeTask(Task(position + 1, textToSave, currentItem.color))
-//                println(position)}
-//              }
-            }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    Log.e("TAG","timer cancel ")
+                    timer.cancel()
+                    timer.purge()
+                }
+            })
+            holder.editText.doAfterTextChanged {}
+
+
         } else {
             holder.itemView.setOnClickListener() {
                 runBlocking { loadData(db) }
@@ -104,12 +88,11 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
         }
     }
 
+
   fun update(cellList: Array<Task>) {
     this.cellList = cellList
     this.notifyDataSetChanged()
   }
-
-
 
 
      class TaskViewHolder(TaskView: View, type: Int) : RecyclerView.ViewHolder(TaskView) {
