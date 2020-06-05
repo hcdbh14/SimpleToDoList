@@ -3,10 +3,7 @@ package com.example.simpletodolist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
@@ -32,7 +29,6 @@ class MainActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(v.windowToken, 0)
             false
         }
-//        setListnerToRootView()
     }
 
     private suspend fun loadTasks() : Array<Task> {
@@ -44,28 +40,4 @@ class MainActivity : AppCompatActivity() {
         return taskList
     }
 
-    var isOpened=false
-
-    fun setListnerToRootView() {
-        val activityRootView: View=recycler_view
-        activityRootView.getViewTreeObserver()
-            .addOnGlobalLayoutListener(OnGlobalLayoutListener {
-                val heightDiff: Int=
-                    activityRootView.getRootView().getHeight() - activityRootView.getHeight()
-                if (heightDiff > 1000) { // 99% of the time the height diff will be due to a keyboard.
-                    Toast.makeText(applicationContext, "Gotcha!!! softKeyboardup", 0)
-                        .show()
-
-                    if (isOpened == false) {
-
-                        //Do two things, make the view top visible and the editText smaller
-                    }
-                    isOpened=true
-                } else if (isOpened == true) {
-
-                    Toast.makeText(applicationContext, "softkeyborad Down!!!", 0).show()
-                    isOpened=false
-                }
-            })
-    }
 }
