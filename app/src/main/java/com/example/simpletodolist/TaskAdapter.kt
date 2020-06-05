@@ -27,7 +27,6 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
     private var DELAY:Long = 2000
     private val view = view
     private val colors = RandomColors()
-    private var dataList = emptyArray<Task>()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
 
     override fun getItemCount() = cellList.size
@@ -48,57 +47,38 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
 
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+        println(position)
         if (position != 0) {
             val currentItem=cellList[position]
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
 
-            holder.editText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    Log.e("TAG","timer start")
-                    timer = Timer()
-                    timer.schedule(object : TimerTask() {
-                        override fun run() {
-                            runBlocking {
-                                db.roomNoteDao().writeTask(Task(position + 1, holder.editText.text.toString(), currentItem.color))
-                            }
-                        }
-                    }, DELAY)
-                }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    Log.e("TAG","timer cancel ")
-                    timer.cancel()
-                    timer.purge()
-                }
-            })
-            holder.editText.doAfterTextChanged {}
+            holder.editText.doAfterTextChanged {
+                runBlocking {
+                db.roomNoteDao().writeTask(Task(position + 1, holder.editText.text.toString(), currentItem.color))
+            }}
 
         } else {
             holder.itemView.setOnClickListener() {
                 runBlocking { loadData(db) }
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(dataList.size + 1, "", colors.getRandomColor()))
+                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor()))
                 }
                 runBlocking { loadData(db) }
-                this.update(this.dataList)
             }
         }
     }
 
     private suspend fun loadData(reference: RoomNoteDatabase) {
         val data=reference.roomNoteDao().getTasks()
-        this.dataList=data
+        this.cellList=data
+        this.notifyDataSetChanged()
     }
-
-  private fun update(cellList: Array<Task>) {
-    this.cellList = cellList
-    this.notifyDataSetChanged()
-  }
 
 
      class TaskViewHolder(TaskView: View, type: Int) : RecyclerView.ViewHolder(TaskView) {
+
          lateinit var editText: EditText
          private lateinit var imageView: ImageView
 

@@ -17,7 +17,7 @@ data class Task(
 @Dao
 interface writeTasks {
 
-    @Query("SELECT * from tasks")
+    @Query("SELECT * from tasks order by id")
     suspend fun getTasks(): Array<Task>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
