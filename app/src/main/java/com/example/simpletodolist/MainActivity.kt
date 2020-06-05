@@ -26,13 +26,13 @@ class MainActivity : AppCompatActivity() {
 
         recycler_view.layoutManager=LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
-        setListnerToRootView()
         recycler_view.setOnTouchListener { v, _ ->
             val imm=
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(v.windowToken, 0)
             false
         }
+        setListnerToRootView()
     }
 
     private suspend fun loadTasks() : Array<Task> {
