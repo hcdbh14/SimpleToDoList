@@ -32,10 +32,9 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
 
     override fun getItemCount() = cellList.size
+    override fun getItemViewType(position: Int): Int { return if (position == 0) 1 else 2 }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position == 0) 1 else 2
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
 
@@ -47,7 +46,7 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
             return TaskViewHolder(itemView, 1)
         }
     }
-    
+
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         if (position != 0) {
@@ -61,7 +60,9 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
                     timer = Timer()
                     timer.schedule(object : TimerTask() {
                         override fun run() {
-                            runBlocking { db.roomNoteDao().writeTask(Task(position + 1, holder.editText.text.toString(), currentItem.color)) }
+                            runBlocking {
+                                db.roomNoteDao().writeTask(Task(position + 1, holder.editText.text.toString(), currentItem.color))
+                            }
                         }
                     }, DELAY)
                 }
@@ -75,7 +76,6 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
             })
             holder.editText.doAfterTextChanged {}
 
-
         } else {
             holder.itemView.setOnClickListener() {
                 runBlocking { loadData(db) }
@@ -88,8 +88,12 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
         }
     }
 
+    private suspend fun loadData(reference: RoomNoteDatabase) {
+        val data=reference.roomNoteDao().getTasks()
+        this.dataList=data
+    }
 
-  fun update(cellList: Array<Task>) {
+  private fun update(cellList: Array<Task>) {
     this.cellList = cellList
     this.notifyDataSetChanged()
   }
@@ -117,9 +121,5 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
         shape.cornerRadii=floatArrayOf(30f, 30f, 30f, 30f, 30f, 30f, 30f, 30f)
         shape.setColor(backgroundColor.toInt())
         return shape
-    }
-    private suspend fun loadData(reference: RoomNoteDatabase) {
-        val data=reference.roomNoteDao().getTasks()
-        this.dataList=data
     }
 }

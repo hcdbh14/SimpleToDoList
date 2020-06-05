@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        runBlocking { recycler_view.adapter=TaskAdapter(loadTasks()) }
+        runBlocking { recycler_view.adapter=TaskAdapter(loadTasks(), window.decorView.findViewById(android.R.id.content)) }
 
         recycler_view.layoutManager=LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(v.windowToken, 0)
             false
         }
-        setListnerToRootView()
+//        setListnerToRootView()
     }
 
     private suspend fun loadTasks() : Array<Task> {
