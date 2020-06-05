@@ -15,9 +15,8 @@ import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
 
 
-class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private var cellList: Array<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-    private val view = view
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
 
@@ -40,12 +39,12 @@ class TaskAdapter(private var cellList: Array<Task>, view: View) : RecyclerView.
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         listenKeyboard()
-        if (viewType == 1) {
-                val addView = LayoutInflater.from(parent.context).inflate(R.layout.add_cell, parent, false)
-                return TaskViewHolder(addView, 0)
+        return if (viewType == 1) {
+            val addView = LayoutInflater.from(parent.context).inflate(R.layout.add_cell, parent, false)
+            TaskViewHolder(addView, 0)
         } else {
             val itemView = LayoutInflater.from(parent.context).inflate(R.layout.task_view, parent, false)
-            return TaskViewHolder(itemView, 1)
+            TaskViewHolder(itemView, 1)
         }
     }
 
