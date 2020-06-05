@@ -51,7 +51,7 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
                 holder.editText.isEnabled = true
               holder.editText.setOnClickListener() {
                 val textToSave = holder.editText.text.toString()
-                runBlocking { db.roomNoteDao().writeTask(Task(position + 1, textToSave, colors.getRandomColor()))
+                runBlocking { db.roomNoteDao().writeTask(Task(position + 1, textToSave, currentItem.color))
                 println(position)}
               }
             }
