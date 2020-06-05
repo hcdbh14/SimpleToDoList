@@ -39,10 +39,7 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
         }
     }
 
-    fun update(cellList: Array<Task>) {
-        this.cellList = cellList
-        this.notifyDataSetChanged()
-    }
+
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         if (position != 0) {
@@ -52,20 +49,28 @@ class TaskAdapter(private var cellList: Array<Task>) : RecyclerView.Adapter<Task
             holder.editText.isEnabled = false
             if (holder.textView.text == "") {
                 holder.editText.isEnabled = true
+              holder.editText.setOnClickListener() {
+                val textToSave = holder.editText.text.toString()
+                runBlocking { db.roomNoteDao().writeTask(Task(position + 1, textToSave, colors.getRandomColor()))
+                println(position)}
+              }
             }
         } else {
             holder.itemView.setOnClickListener() {
+                runBlocking { loadData(db) }
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor()))
-                    println(db.roomNoteDao().getTasks().size)
+                    db.roomNoteDao().writeTask(Task(dataList.size + 1, "", colors.getRandomColor()))
                 }
                 runBlocking { loadData(db) }
                 this.update(this.dataList)
-                this.dataList.reverse()
             }
         }
     }
 
+  fun update(cellList: Array<Task>) {
+    this.cellList = cellList
+    this.notifyDataSetChanged()
+  }
 
 
 
