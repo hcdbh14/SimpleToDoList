@@ -35,8 +35,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
         }
 
-    private var taskID: Long = 0
-    private  var typedText = ""
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
     override fun getItemCount() = cellList.size
@@ -85,25 +83,26 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
             if (!currentItem.locked && currentItem.task =="") {
                 holder.editText.isEnabled = true
-            }
 
-            holder.editText.doAfterTextChanged {
-
-                taskID = currentItem.id
-                typedText = holder.editText.text.toString()
-                runBlocking {
-                    if(!cellList[position].locked && typedText != "" && isOpened) {
-                db.roomNoteDao().writeTask(Task(taskID, typedText, cellList[position].color, locked= true))
+                if(!cellList[position].locked && holder.editText.text.toString() != "" && isOpened) {
+                holder.editText.doAfterTextChanged {
+                    runBlocking {
+                            db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), currentItem.color, locked= true))
+                        }
                     }
+                }
             }
-                typedText = ""
-            }
+
+
 
 
         } else {
             holder.itemView.setOnClickListener {
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(System.currentTimeMillis(), "", colors.getRandomColor(), locked= false))
+                }
+                for (i in cellList){
+                    println(i)
                 }
                 runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
