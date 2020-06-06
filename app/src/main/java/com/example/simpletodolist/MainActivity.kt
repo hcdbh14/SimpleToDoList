@@ -21,7 +21,10 @@ class MainActivity : AppCompatActivity() {
 
         runBlocking { recycler_view.adapter=TaskAdapter(loadTasks(), recycler_view) }
 
-        recycler_view.layoutManager=LinearLayoutManager(this)
+        val linearLayoutManager=LinearLayoutManager(this)
+        linearLayoutManager.reverseLayout=true
+        linearLayoutManager.stackFromEnd=true
+        recycler_view.layoutManager=linearLayoutManager
         recycler_view.setHasFixedSize(true)
         recycler_view.setOnTouchListener { v, _ ->
             val imm=
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val db=RoomNoteDatabase.getInstance(this)
         var taskList=db.roomNoteDao().getTasks()
         if (taskList.isEmpty()) {
-            val task = Task(0, "", RandomColors().getRandomColor(), locked = true)
+            val task = Task(0, "", RandomColors().getRandomColor(), locked = false)
             db.roomNoteDao().writeTask(task)
             taskList+=task
         }

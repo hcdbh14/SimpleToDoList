@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.add_cell.view.*
 import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
@@ -20,9 +21,8 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
     private  var typedText = ""
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
-
     override fun getItemCount() = cellList.size
-    override fun getItemViewType(position: Int): Int { return if (position == 0) 1 else 2 }
+    override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
     private var isOpened=false
 
     private fun listenKeyboard() {
@@ -54,7 +54,7 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
-        if (position != 0) {
+        if (position != cellList.lastIndex) {
             val currentItem=cellList[position]
             holder.editText.isEnabled = false
             holder.itemView.background=roundCorners(currentItem.color)
@@ -84,6 +84,7 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
                     db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))
                 }
                 runBlocking { loadData(db) }
+                view.recycler_view.scrollToPosition(cellList.lastIndex)
             }
         }
     }
