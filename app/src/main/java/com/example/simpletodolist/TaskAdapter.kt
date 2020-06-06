@@ -106,16 +106,16 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(System.currentTimeMillis()/1000, "", colors.getRandomColor(), locked= false))
                 }
-                runBlocking { loadData(db) }
+                runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
             }
         }
     }
 
 
-    private suspend fun loadData(reference: RoomNoteDatabase) {
-        val data=reference.roomNoteDao().getTasks()
-        this.cellList=data.toMutableList()
+    private suspend fun loadData() {
+        val data = db.roomNoteDao().getTasks().toMutableList()
+        this.cellList=data
         this.notifyDataSetChanged()
     }
 

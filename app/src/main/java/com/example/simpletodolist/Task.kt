@@ -12,7 +12,7 @@ data class Task(
     var id: Long = System.currentTimeMillis()/1000,
     val task: String,
     val color: Long,
-    val locked: Boolean
+    var locked: Boolean
 )
 
 
