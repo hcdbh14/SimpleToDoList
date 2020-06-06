@@ -19,20 +19,21 @@ import kotlinx.coroutines.runBlocking
 
 
 class TaskAdapter(private var cellList: Array<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-//    var itemTouchHelperCallback: SimpleCallback=
-//        object : SimpleCallback(0, ItemTouchHelper.RIGHT) {
-//            override fun onMove(
-//                recyclerView: RecyclerView,
-//                viewHolder: RecyclerView.ViewHolder,
-//                target: RecyclerView.ViewHolder
-//            ): Boolean {
-//                return false
-//            }
-//
-//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                deleteNote(mNotes.get(viewHolder.adapterPosition))
-//            }
-//        }
+    private var itemTouchHelperCallback: SimpleCallback=
+        object : SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val taskToRemove = cellList[viewHolder.adapterPosition]
+                runBlocking {  deleteTask(taskToRemove, taskToRemove.id) }
+            }
+        }
 
     private var taskID = 0
     private  var typedText = ""
@@ -57,7 +58,12 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
             }
     }
 
+    init {
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+
         listenKeyboard()
         return if (viewType == 1) {
             val addView = LayoutInflater.from(parent.context).inflate(R.layout.add_cell, parent, false)
@@ -97,6 +103,7 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
         } else {
             holder.itemView.setOnClickListener {
+                println(cellList.size + 1)
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))
                 }
@@ -106,10 +113,18 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
         }
     }
 
+
     private suspend fun loadData(reference: RoomNoteDatabase) {
         val data=reference.roomNoteDao().getTasks()
         this.cellList=data
         this.notifyDataSetChanged()
+    }
+
+
+    private suspend fun deleteTask(taskToRemove: Task, position: Int) {
+        db.roomNoteDao().removeTask(taskToRemove)
+        loadData(db)
+        this.notifyItemRemoved(position)
     }
 
 
