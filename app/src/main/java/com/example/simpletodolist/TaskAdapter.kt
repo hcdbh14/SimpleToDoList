@@ -96,7 +96,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 db.roomNoteDao().writeTask(Task(taskID, typedText, cellList[position].color, locked= true))
                     }
             }
-                taskID = 0
                 typedText = ""
             }
 
@@ -104,7 +103,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         } else {
             holder.itemView.setOnClickListener {
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(System.currentTimeMillis()/1000, "", colors.getRandomColor(), locked= false))
+                    db.roomNoteDao().writeTask(Task(System.currentTimeMillis(), "", colors.getRandomColor(), locked= false))
                 }
                 runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)

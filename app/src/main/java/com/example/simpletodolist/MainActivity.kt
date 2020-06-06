@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val db=RoomNoteDatabase.getInstance(this)
         val taskList=db.roomNoteDao().getTasks().toMutableList()
         if (taskList.isEmpty()) {
-            val task = Task(System.currentTimeMillis()/1000, "", RandomColors().getRandomColor(), locked= false)
+            val task = Task(System.currentTimeMillis(), "", RandomColors().getRandomColor(), locked= false)
             db.roomNoteDao().writeTask(task)
             taskList.add(task)
         }

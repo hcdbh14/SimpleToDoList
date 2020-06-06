@@ -9,7 +9,7 @@ import androidx.room.*
 
 data class Task(
     @PrimaryKey(autoGenerate = false)
-    var id: Long = System.currentTimeMillis()/1000,
+    var id: Long = System.currentTimeMillis(),
     val task: String,
     val color: Long,
     var locked: Boolean
