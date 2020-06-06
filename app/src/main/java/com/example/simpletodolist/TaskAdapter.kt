@@ -22,7 +22,7 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     private var itemTouchHelperCallback: SimpleCallback=
-        object : SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        object : SimpleCallback(0, ItemTouchHelper.LEFT  or ItemTouchHelper.RIGHT ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
