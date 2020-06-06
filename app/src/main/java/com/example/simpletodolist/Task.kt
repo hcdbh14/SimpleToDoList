@@ -8,12 +8,13 @@ import androidx.room.*
 )
 
 data class Task(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    @PrimaryKey(autoGenerate = false)
+    var id: Long = System.currentTimeMillis()/1000,
     val task: String,
     val color: Long,
     val locked: Boolean
 )
+
 
 @Dao
 interface writeTasks {
