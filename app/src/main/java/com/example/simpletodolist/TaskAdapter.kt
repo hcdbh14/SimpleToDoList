@@ -2,14 +2,12 @@ package com.example.simpletodolist
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -39,7 +37,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
         }
 
-    private var editedTask = 0
+    private var editedTask = Task(0, "", 0, false)
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
     override fun getItemCount() = cellList.size
@@ -56,6 +54,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     println("open")
                 } else if (isOpened) {
                     isOpened=false
+                    runBlocking {  db.roomNoteDao().writeTask(editedTask) }
                     println("closed")
                 }
             }
@@ -78,7 +77,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
         if (position != cellList.lastIndex) {
@@ -89,31 +87,17 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
 
             if (!currentItem.locked && currentItem.task =="") {
-//                holder.editText.focusable = NOT_FOCUSABLE
-//                holder.editText.focusable = FOCUSABLE
+
                 holder.editText.isEnabled = true
                 holder.editText.setOnTouchListener { v, event ->
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                                 holder.editText.doAfterTextChanged {
-                                    if(!cellList[position].locked && holder.editText.text.toString() != "" && isOpened) {
-                                    runBlocking {
-                                        db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), currentItem.color, locked= true))
-                                    }
-                                }
+                                        editedTask = Task(currentItem.id, holder.editText.text.toString(), currentItem.color, locked= true)
                             }
                     }
-
                     v?.onTouchEvent(event) ?: true
                 }
-
-//                if(!cellList[position].locked && holder.editText.text.toString() != "" && isOpened) {
-//                holder.editText.doAfterTextChanged {
-//                    runBlocking {
-//                            db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), currentItem.color, locked= true))
-//                        }
-//                    }
-//                }
             }
 
 
