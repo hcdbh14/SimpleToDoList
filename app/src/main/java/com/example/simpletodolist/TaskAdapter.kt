@@ -59,12 +59,12 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
     }
 
     init {
+        listenKeyboard()
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
 
-        listenKeyboard()
         return if (viewType == 1) {
             val addView = LayoutInflater.from(parent.context).inflate(R.layout.add_cell, parent, false)
             TaskViewHolder(addView, 0)
@@ -122,7 +122,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
     private suspend fun deleteTask(taskToRemove: Task, position: Int) {
         db.roomNoteDao().removeTask(taskToRemove)
-        loadData(db)
+        cellList.removeAt(position)
         this.notifyItemRemoved(position)
     }
 
