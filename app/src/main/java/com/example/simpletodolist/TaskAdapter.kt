@@ -35,7 +35,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
         }
 
-    private var taskID = 0
+    private var taskID: Long = 0
     private  var typedText = ""
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
@@ -92,8 +92,8 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 taskID = currentItem.id
                 typedText = holder.editText.text.toString()
                 runBlocking {
-                    if(!cellList[taskID - 1].locked && typedText != "" && isOpened) {
-                db.roomNoteDao().writeTask(Task(taskID, typedText, cellList[taskID - 1].color, locked = true))
+                    if(!cellList[position].locked && typedText != "" && isOpened) {
+                db.roomNoteDao().writeTask(Task(taskID, typedText, cellList[position].color, locked= true))
                     }
             }
                 taskID = 0
@@ -103,9 +103,8 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
         } else {
             holder.itemView.setOnClickListener {
-                println(cellList.size + 1)
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))
+                    db.roomNoteDao().writeTask(Task(System.currentTimeMillis()/1000, "", colors.getRandomColor(), locked= false))
                 }
                 runBlocking { loadData(db) }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
@@ -123,7 +122,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
     private suspend fun deleteTask(taskToRemove: Task, position: Int) {
         db.roomNoteDao().removeTask(taskToRemove)
-        this.cellList.removeAt(position)
+        loadData(db)
         this.notifyItemRemoved(position)
     }
 
