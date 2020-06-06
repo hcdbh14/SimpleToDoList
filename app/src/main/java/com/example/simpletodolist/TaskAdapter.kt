@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
 
 
-class TaskAdapter(private var cellList: Array<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     private var itemTouchHelperCallback: SimpleCallback=
         object : SimpleCallback(0, ItemTouchHelper.RIGHT) {
             override fun onMove(
@@ -31,7 +31,7 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val taskToRemove = cellList[viewHolder.adapterPosition]
-                runBlocking {  deleteTask(taskToRemove, taskToRemove.id) }
+                runBlocking {  deleteTask(taskToRemove, viewHolder.adapterPosition) }
             }
         }
 
@@ -116,14 +116,14 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
     private suspend fun loadData(reference: RoomNoteDatabase) {
         val data=reference.roomNoteDao().getTasks()
-        this.cellList=data
+        this.cellList=data.toMutableList()
         this.notifyDataSetChanged()
     }
 
 
     private suspend fun deleteTask(taskToRemove: Task, position: Int) {
         db.roomNoteDao().removeTask(taskToRemove)
-        loadData(db)
+        this.cellList.removeAt(position)
         this.notifyItemRemoved(position)
     }
 
