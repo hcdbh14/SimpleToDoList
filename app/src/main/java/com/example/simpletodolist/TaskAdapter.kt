@@ -50,7 +50,7 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        println(position)
+
         if (position != 0) {
             val currentItem=cellList[position]
             if (currentItem.locked) {
@@ -62,15 +62,17 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
             holder.editText.doAfterTextChanged {
                 runBlocking {
+                    if(!cellList[position].locked && holder.editText.text.toString() != "") {
                 db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), cellList[position].color, locked = true))
-                    if (!isOpened) {
-                        holder.editText.isEnabled = false
-                    }
+                        if (!isOpened) {
+                            holder.editText.isEnabled = false
+                        }
+                        }
             }}
 
         } else {
             holder.itemView.setOnClickListener {
-                runBlocking { loadData(db) }
+                println(cellList.size)
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))
                 }
