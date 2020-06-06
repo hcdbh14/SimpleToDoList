@@ -13,5 +13,6 @@
         android:layout_height="match_parent"
         android:background="@null"
         android:gravity="center"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:textColor="@drawable/edit_text_selector"/>
 </androidx.cardview.widget.CardView>
