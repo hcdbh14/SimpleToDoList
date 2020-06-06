@@ -16,7 +16,8 @@ import kotlinx.coroutines.runBlocking
 
 
 class TaskAdapter(private var cellList: Array<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-
+    private var taskID = 0
+    private  var typedText = ""
     private val colors = RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
 
@@ -31,8 +32,10 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
                 val heightDiff: Int=activityRootView.rootView.height - activityRootView.height
                 if (heightDiff > 1000) {
                     isOpened=true
+                    println("open")
                 } else if (isOpened) {
                     isOpened=false
+                    println("closed")
                 }
             }
     }
@@ -53,26 +56,30 @@ class TaskAdapter(private var cellList: Array<Task>, private val view: View) : R
 
         if (position != 0) {
             val currentItem=cellList[position]
-            if (currentItem.locked) {
-                holder.editText.isEnabled = false
-            }
+            holder.editText.isEnabled = false
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
 
+            if (!currentItem.locked && currentItem.task =="") {
+                holder.editText.isEnabled = true
+            }
 
             holder.editText.doAfterTextChanged {
+
+                taskID = currentItem.id
+                typedText = holder.editText.text.toString()
                 runBlocking {
-                    if(!cellList[position].locked && holder.editText.text.toString() != "") {
-                db.roomNoteDao().writeTask(Task(currentItem.id, holder.editText.text.toString(), cellList[position].color, locked = true))
-                        if (!isOpened) {
-                            holder.editText.isEnabled = false
-                        }
-                        }
-            }}
+                    if(!cellList[taskID - 1].locked && typedText != "" && isOpened) {
+                db.roomNoteDao().writeTask(Task(taskID, typedText, cellList[taskID - 1].color, locked = true))
+                    }
+            }
+                taskID = 0
+                typedText = ""
+            }
+
 
         } else {
             holder.itemView.setOnClickListener {
-                println(cellList.size)
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(cellList.size + 1, "", colors.getRandomColor(), locked = false))
                 }
