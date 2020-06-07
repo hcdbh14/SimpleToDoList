@@ -24,29 +24,28 @@ import kotlinx.coroutines.runBlocking
 
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
+    private var isOpened=false
+    private val colors =RandomColors()
+    override fun getItemCount() = cellList.size
+    private var editedTask =Task(0, "", 0, false)
+    private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
+    override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
     private var itemTouchHelperCallback: SimpleCallback=
         object : SimpleCallback(0, ItemTouchHelper.LEFT  or ItemTouchHelper.RIGHT ) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val taskToRemove = cellList[viewHolder.adapterPosition]
                 runBlocking {  deleteTask(taskToRemove, viewHolder.adapterPosition) }
             }
         }
 
-    private var editedTask =
-        Task(0, "", 0, false)
-    private val colors =RandomColors()
-    private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
-    override fun getItemCount() = cellList.size
-    override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
-    private var isOpened=false
+
+    init {
+        listenKeyboard()
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
+    }
+
 
     private fun listenKeyboard() {
         val activityRootView: View=view
@@ -64,10 +63,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
     }
 
-    init {
-        listenKeyboard()
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
 
@@ -115,10 +110,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     v?.onTouchEvent(event) ?: true
                 }
             }
-
-
-
-
         } else {
             val circleShape=GradientDrawable()
             circleShape.setColor(cellList.last().color.toInt())
@@ -126,6 +117,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             holder.itemView.imageID.background=circleShape
 
             holder.itemView.imageID.setOnClickListener {
+                if (isOpened) {
+                    runBlocking {
+                        db.roomNoteDao().writeTask(editedTask) } }
                 runBlocking {
                     db.roomNoteDao().writeTask(
                         Task(
