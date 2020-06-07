@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SimpleToDoList</string>
+    <string name="add_new_task_button">add new task button</string>
 </resources>

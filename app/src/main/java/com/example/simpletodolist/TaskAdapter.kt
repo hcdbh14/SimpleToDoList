@@ -104,6 +104,11 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
 
         } else {
+            val circleShape=GradientDrawable()
+            circleShape.setColor(cellList.last().color.toInt())
+            circleShape.cornerRadius=200f
+            holder.itemView.imageID.background=circleShape
+
             holder.itemView.imageID.setOnClickListener {
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(System.currentTimeMillis(), "", colors.getRandomColor(), locked= false))
