@@ -113,7 +113,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         } else {
             val circleShape=GradientDrawable()
             circleShape.setColor(cellList.last().color.toInt())
-            circleShape.cornerRadius=200f
+            circleShape.cornerRadius=260f
             holder.itemView.imageID.background=circleShape
 
             holder.itemView.imageID.setOnClickListener {
