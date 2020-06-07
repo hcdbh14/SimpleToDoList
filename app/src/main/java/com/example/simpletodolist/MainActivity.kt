@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                 recycler_view
             )
         }
-
+        supportActionBar?.hide()
         val linearLayoutManager=LinearLayoutManager(this)
         linearLayoutManager.reverseLayout=true
         linearLayoutManager.stackFromEnd=true
