@@ -24,7 +24,7 @@ import kotlinx.coroutines.runBlocking
 
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-
+    private var firstLaunch = true
     private var isOpened=false
     private val colors =RandomColors()
     override fun getItemCount() = cellList.size
@@ -111,16 +111,25 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 }
             }
         } else {
+
             val circleShape=GradientDrawable()
             circleShape.setColor(cellList.last().color.toInt())
             circleShape.cornerRadius=260f
             holder.itemView.imageID.background=circleShape
+            if (!firstLaunch) {
+                holder.itemView.scaleX = 0.1f
+                holder.itemView.scaleY = 0.1f
+                holder.itemView.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=300
+            }
+            firstLaunch = false
 
             holder.itemView.imageID.setOnClickListener {
+
                 if (isOpened) {
                     runBlocking {
                         db.roomNoteDao().writeTask(editedTask) } }
                 runBlocking {
+                    holder.itemView.imageID.animate().start()
                     db.roomNoteDao().writeTask(
                         Task(
                             System.currentTimeMillis(),
