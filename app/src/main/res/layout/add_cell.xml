@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="2dp"
     android:layout_marginRight="2dp"
+    android:layout_margin="5dp"
     app:cardElevation="0dp"
     app:cardCornerRadius="0.5dp"
     app:cardPreventCornerOverlap="false"
@@ -21,7 +22,7 @@
         android:background="@drawable/round_button"
         android:contentDescription="@string/add_new_task_button"
         android:scaleType="centerInside"
-        android:src="@drawable/plus"/>
+        android:src="@drawable/add"/>
 
 
 </androidx.cardview.widget.CardView>
