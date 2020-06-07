@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.simpletodolist.adapter.TaskAdapter
+import com.example.simpletodolist.model.RandomColors
+import com.example.simpletodolist.model.Task
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.runBlocking
@@ -19,7 +22,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        runBlocking { recycler_view.adapter=TaskAdapter(loadTasks(), recycler_view) }
+        runBlocking { recycler_view.adapter=
+            TaskAdapter(
+                loadTasks(),
+                recycler_view
+            )
+        }
 
         val linearLayoutManager=LinearLayoutManager(this)
         linearLayoutManager.reverseLayout=true
@@ -38,7 +46,12 @@ class MainActivity : AppCompatActivity() {
         val db=RoomNoteDatabase.getInstance(this)
         val taskList=db.roomNoteDao().getTasks().toMutableList()
         if (taskList.isEmpty()) {
-            val task = Task(System.currentTimeMillis(), "", RandomColors().getRandomColor(), locked= false)
+            val task =Task(
+                System.currentTimeMillis(),
+                "",
+                RandomColors().getRandomColor(),
+                locked=false
+            )
             db.roomNoteDao().writeTask(task)
             taskList.add(task)
         }

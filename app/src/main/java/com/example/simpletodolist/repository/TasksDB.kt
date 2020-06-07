@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.simpletodolist.Task
-import com.example.simpletodolist.writeTasks
+import com.example.simpletodolist.model.Task
+import com.example.simpletodolist.model.writeTasks
 
 private const val DATABASE = "tasks"
 

@@ -1,4 +1,4 @@
-package com.example.simpletodolist
+package com.example.simpletodolist.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
@@ -13,6 +13,9 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback
 import androidx.recyclerview.widget.RecyclerView
+import com.example.simpletodolist.R
+import com.example.simpletodolist.model.RandomColors
+import com.example.simpletodolist.model.Task
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.add_cell.view.*
@@ -37,8 +40,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
         }
 
-    private var editedTask = Task(0, "", 0, false)
-    private val colors = RandomColors()
+    private var editedTask =
+        Task(0, "", 0, false)
+    private val colors =RandomColors()
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
     override fun getItemCount() = cellList.size
     override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
@@ -69,10 +73,16 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
         return if (viewType == 1) {
             val addView = LayoutInflater.from(parent.context).inflate(R.layout.add_cell, parent, false)
-            TaskViewHolder(addView, 0)
+            TaskViewHolder(
+                addView,
+                0
+            )
         } else {
             val itemView = LayoutInflater.from(parent.context).inflate(R.layout.task_view, parent, false)
-            TaskViewHolder(itemView, 1)
+            TaskViewHolder(
+                itemView,
+                1
+            )
         }
     }
 
@@ -93,7 +103,13 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                                 holder.editText.doAfterTextChanged {
-                                        editedTask = Task(currentItem.id, holder.editText.text.toString(), currentItem.color, locked= true)
+                                        editedTask =
+                                            Task(
+                                                currentItem.id,
+                                                holder.editText.text.toString(),
+                                                currentItem.color,
+                                                locked=true
+                                            )
                             }
                     }
                     v?.onTouchEvent(event) ?: true
@@ -111,7 +127,14 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
             holder.itemView.imageID.setOnClickListener {
                 runBlocking {
-                    db.roomNoteDao().writeTask(Task(System.currentTimeMillis(), "", colors.getRandomColor(), locked= false))
+                    db.roomNoteDao().writeTask(
+                        Task(
+                            System.currentTimeMillis(),
+                            "",
+                            colors.getRandomColor(),
+                            locked=false
+                        )
+                    )
                 }
                 runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
