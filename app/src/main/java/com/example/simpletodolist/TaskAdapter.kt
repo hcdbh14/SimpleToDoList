@@ -104,12 +104,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
 
         } else {
-            holder.itemView.setOnClickListener {
+            holder.itemView.imageID.setOnClickListener {
                 runBlocking {
                     db.roomNoteDao().writeTask(Task(System.currentTimeMillis(), "", colors.getRandomColor(), locked= false))
-                }
-                for (i in cellList){
-                    println(i)
                 }
                 runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
