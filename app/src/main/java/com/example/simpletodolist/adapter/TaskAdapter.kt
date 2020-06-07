@@ -24,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
     private var firstLaunch = true
     private var isOpened=false
     private val colors =RandomColors()
@@ -40,19 +41,21 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
         }
 
-
     init {
         listenKeyboard()
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
     }
 
 
+
+
     private fun listenKeyboard() {
-        val activityRootView: View=view
+        val activityRootView: View=view.recycler_view
+
         activityRootView.viewTreeObserver
             .addOnGlobalLayoutListener {
                 val heightDiff: Int=activityRootView.rootView.height - activityRootView.height
-                if (heightDiff > 1000) {
+                if (heightDiff > 500) {
                     isOpened=true
                     println("open")
                 } else if (isOpened) {
@@ -122,7 +125,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 holder.itemView.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=300
             }
             firstLaunch = false
-
+//
             holder.itemView.imageID.setOnClickListener {
 
                 if (isOpened) {
@@ -149,6 +152,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
     private suspend fun loadData() {
         val data = db.roomNoteDao().getTasks().toMutableList()
+        println("saved")
         this.cellList=data
         this.notifyDataSetChanged()
     }
