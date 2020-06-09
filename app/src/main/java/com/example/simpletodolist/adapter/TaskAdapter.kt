@@ -105,9 +105,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 Handler().postDelayed({
                     val animation=TranslateAnimation(0F, 0F, -250F, 0F)
                     animation.fillAfter=true
-                    animation.duration=300
+                    animation.duration=400
                     holder.itemView.startAnimation(animation)
-                }, ((cellList.size - position  ) * 20).toLong())
+                }, ((cellList.size - position  ) * 10).toLong())
 
 
             } else if (toggleRowAnimation && position == cellList.lastIndex - 1) {
