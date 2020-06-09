@@ -96,27 +96,32 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
             if (toggleRowAnimation && position != cellList.lastIndex - 1) {
-                val animation=TranslateAnimation(0F, 0F, -100F, 0F)
+                val animation=TranslateAnimation(0F, 0F, -250F, 0F)
 
                 animation.fillAfter=true
 
-                animation.duration=500
+                animation.duration=1000
+                holder.itemView.startAnimation(animation)
 
-                    Handler().postDelayed({
-                        holder.itemView.startAnimation(animation)
-                    }, (( cellList.size - position ) * 10).toLong())
 
 
             } else if (toggleRowAnimation && position == cellList.lastIndex - 1) {
+
+                val animation=TranslateAnimation(0F, 0F, -300F, 100F)
+                animation.fillAfter=true
+                holder.itemView.startAnimation(animation)
+                animation.duration=1000
                 holder.itemView.scaleX = 0F
                 holder.itemView.scaleY = 0F
-                  holder.itemView.animate().scaleX(1F).duration = 1000
-                holder.itemView.animate().scaleY(1.5F).duration = 1000
+                holder.itemView.animate().scaleX(1F).duration = 1000
+                holder.itemView.animate().scaleY(1.1F).duration = 1000
 
                 Handler().postDelayed({
-
-                    holder.itemView.animate().scaleY(1F).duration = 500
-                },  1100)
+                    val animation=TranslateAnimation(0F, 0F, 100F, 0F)
+                    holder.itemView.startAnimation(animation)
+                    animation.duration=500
+                    holder.itemView.animate().scaleY(1F).duration = 1000
+                },  1000)
             }
 
 
@@ -146,9 +151,11 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             circleShape.cornerRadius=260f
             holder.itemView.imageID.background=circleShape
             if (!firstLaunch) {
+
                 holder.itemView.scaleX = 0.1f
                 holder.itemView.scaleY = 0.1f
-                holder.itemView.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=300
+                holder.itemView.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=1000
+
             }
             firstLaunch = false
 //
