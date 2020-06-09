@@ -2,10 +2,12 @@ package com.example.simpletodolist.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.TranslateAnimation
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +27,7 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
+    private var toggleRowAnimation = false
     private var firstLaunch = true
     private var isOpened=false
     private val colors =RandomColors()
@@ -92,6 +95,29 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             holder.editText.isEnabled = false
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
+            if (toggleRowAnimation && position != cellList.lastIndex - 1) {
+                val animation=TranslateAnimation(0F, 0F, -100F, 0F)
+
+                animation.fillAfter=true
+
+                animation.duration=500
+
+                    Handler().postDelayed({
+                        holder.itemView.startAnimation(animation)
+                    }, (( cellList.size - position ) * 10).toLong())
+
+
+            } else if (toggleRowAnimation && position == cellList.lastIndex - 1) {
+                holder.itemView.scaleX = 0F
+                holder.itemView.scaleY = 0F
+                  holder.itemView.animate().scaleX(1F).duration = 1000
+                holder.itemView.animate().scaleY(1.5F).duration = 1000
+
+                Handler().postDelayed({
+
+                    holder.itemView.animate().scaleY(1F).duration = 500
+                },  1100)
+            }
 
 
             if (!currentItem.locked && currentItem.task =="") {
@@ -127,6 +153,10 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             firstLaunch = false
 //
             holder.itemView.imageID.setOnClickListener {
+            toggleRowAnimation = true
+                Handler().postDelayed({
+                   toggleRowAnimation = false
+                }, 1000)
 
                 if (isOpened) {
                     runBlocking {
