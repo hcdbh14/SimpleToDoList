@@ -96,31 +96,55 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
             if (toggleRowAnimation && position != cellList.lastIndex - 1) {
-                val animation=TranslateAnimation(0F, 0F, -250F, 0F)
 
-                animation.fillAfter=true
 
-                animation.duration=1000
-                holder.itemView.startAnimation(animation)
+                    val animation=TranslateAnimation(0F, 0F, -250F, -250F)
+                    animation.fillAfter=true
+                    holder.itemView.startAnimation(animation)
 
+                Handler().postDelayed({
+                    val animation=TranslateAnimation(0F, 0F, -250F, 0F)
+                    animation.fillAfter=true
+                    animation.duration=300
+                    holder.itemView.startAnimation(animation)
+                }, ((cellList.size - position  ) * 20).toLong())
 
 
             } else if (toggleRowAnimation && position == cellList.lastIndex - 1) {
 
-                val animation=TranslateAnimation(0F, 0F, -300F, 100F)
+                val animation=TranslateAnimation(0F, 0F, -300F, 50F)
                 animation.fillAfter=true
                 holder.itemView.startAnimation(animation)
-                animation.duration=1000
+                animation.duration=250
                 holder.itemView.scaleX = 0F
                 holder.itemView.scaleY = 0F
-                holder.itemView.animate().scaleX(1F).duration = 1000
-                holder.itemView.animate().scaleY(1.1F).duration = 1000
+                holder.itemView.animate().scaleX(1.25F).duration = 250
+                holder.itemView.animate().scaleY(1.25F).duration = 250
 
                 Handler().postDelayed({
-                    val animation=TranslateAnimation(0F, 0F, 100F, 0F)
+                    val animation=TranslateAnimation(0F, 0F, 50F, -100F)
+                    holder.itemView.startAnimation(animation)
+                    animation.duration=250
+                    holder.itemView.animate().scaleY(0.8F).duration = 250
+                    holder.itemView.animate().scaleX(0.8F).duration = 250
+
+                },  250)
+                Handler().postDelayed({
+                    val animation=TranslateAnimation(0F, 0F, -100F, 25F)
                     holder.itemView.startAnimation(animation)
                     animation.duration=500
-                    holder.itemView.animate().scaleY(1F).duration = 1000
+                    holder.itemView.animate().scaleY(1.1F).duration = 500
+                    holder.itemView.animate().scaleX(1.1F).duration = 500
+
+
+                },  500)
+                Handler().postDelayed({
+                    val animation=TranslateAnimation(0F, 0F, 25F, 0F)
+                    holder.itemView.startAnimation(animation)
+                    animation.duration=250
+                    holder.itemView.animate().scaleY(1F).duration = 400
+                    holder.itemView.animate().scaleX(1F).duration = 400
+
                 },  1000)
             }
 
