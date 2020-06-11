@@ -16,9 +16,16 @@ class RandomColors {
         0xffa12a5e,
         0xff710162,
         0xff022c7d
+
     )
+    private var colorsList =colors.toMutableList()
 
     fun getRandomColor() : Long {
-        return colors.random()
+        if (colorsList.size == 2) {
+            colorsList = colors.toMutableList()
+        }
+        val color = colorsList.random()
+        colorsList.remove(color)
+        return color
     }
 }
