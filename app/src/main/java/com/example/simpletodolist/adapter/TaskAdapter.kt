@@ -29,7 +29,6 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-
     private var isOpened=false
     private var firstLaunch = true
     private val colors =RandomColors()
@@ -43,6 +42,10 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 val taskToRemove = cellList[viewHolder.adapterPosition]
                 runBlocking {  deleteTask(taskToRemove, viewHolder.adapterPosition) }
             }
+            override fun getSwipeDirs (recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                    if (viewHolder.adapterPosition == cellList.lastIndex) return 0
+                return super.getSwipeDirs(recyclerView, viewHolder)
+            }
         }
 
     init {
@@ -52,7 +55,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
     override fun getItemCount() = cellList.size
     override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
 
@@ -167,7 +169,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
             }
             firstLaunch = false
-//
+
             holder.itemView.imageID.setOnClickListener {
             toggleRowAnimation = true
                 Handler().postDelayed({
