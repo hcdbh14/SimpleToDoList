@@ -1,6 +1,7 @@
 package com.example.simpletodolist.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.TranslateAnimation
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +36,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
     override fun getItemCount() = cellList.size
     private var editedTask =Task(0, "", 0, false)
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
-    override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
     private var itemTouchHelperCallback: SimpleCallback=
         object : SimpleCallback(0, ItemTouchHelper.LEFT  or ItemTouchHelper.RIGHT ) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
@@ -49,25 +50,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
     }
 
-
-
-
-    private fun listenKeyboard() {
-        val activityRootView: View=view.recycler_view
-
-        activityRootView.viewTreeObserver
-            .addOnGlobalLayoutListener {
-                val heightDiff: Int=activityRootView.rootView.height - activityRootView.height
-                if (heightDiff > 500) {
-                    isOpened=true
-                    println("open")
-                } else if (isOpened) {
-                    isOpened=false
-                    runBlocking {  db.roomNoteDao().writeTask(editedTask) }
-                    println("closed")
-                }
-            }
-    }
+    override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -153,6 +136,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
                 holder.editText.isEnabled = true
                 holder.editText.setOnTouchListener { v, event ->
+                    view.recycler_view.reopenKeyboard()
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                                 holder.editText.doAfterTextChanged {
@@ -210,6 +194,27 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
     }
 
+    private fun listenKeyboard() {
+        val activityRootView: View=view.recycler_view
+
+        activityRootView.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                val heightDiff: Int=activityRootView.rootView.height - activityRootView.height
+                if (heightDiff > 500) {
+                    isOpened=true
+                    println("open")
+                } else if (isOpened) {
+                    isOpened=false
+                    runBlocking {  db.roomNoteDao().writeTask(editedTask) }
+                    println("closed")
+                }
+            }
+    }
+
+    private fun View.reopenKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
 
     private suspend fun loadData() {
         val data = db.roomNoteDao().getTasks().toMutableList()
