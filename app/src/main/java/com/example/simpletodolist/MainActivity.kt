@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpletodolist.adapter.TaskAdapter
 import com.example.simpletodolist.model.RandomColors
 import com.example.simpletodolist.model.Task
-import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
+import com.example.simpletodolist.repository.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.runBlocking
 

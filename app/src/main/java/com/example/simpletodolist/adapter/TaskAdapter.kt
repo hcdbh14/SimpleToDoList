@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simpletodolist.R
 import com.example.simpletodolist.model.RandomColors
 import com.example.simpletodolist.model.Task
-import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNoteDatabase
+import com.example.simpletodolist.repository.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.add_cell.view.*
 import kotlinx.android.synthetic.main.task_view.view.*
