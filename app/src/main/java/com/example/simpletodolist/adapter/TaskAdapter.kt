@@ -30,7 +30,6 @@ import kotlinx.coroutines.runBlocking
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private var isOpened=false
-    private var firstLaunch = true
     private val colors =RandomColors()
     private var toggleRowAnimation = false
     private var editedTask =Task(0, "", 0, false)
@@ -161,14 +160,11 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             circleShape.setColor(cellList.last().color.toInt())
             circleShape.cornerRadius=260f
             holder.itemView.imageID.background=circleShape
-            if (!firstLaunch) {
-
+            if (toggleRowAnimation) {
                 holder.itemView.scaleX = 0.1f
                 holder.itemView.scaleY = 0.1f
                 holder.itemView.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=1000
-
             }
-            firstLaunch = false
 
             holder.itemView.imageID.setOnClickListener {
             toggleRowAnimation = true
