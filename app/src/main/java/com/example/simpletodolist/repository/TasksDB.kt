@@ -1,4 +1,4 @@
-package com.wiseassblog.jetpacknotesmvvmkotlin.model
+package com.example.simpletodolist.repository
 
 import android.content.Context
 import androidx.room.Database
