@@ -29,11 +29,11 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-    private var toggleRowAnimation = false
-    private var firstLaunch = true
+
     private var isOpened=false
+    private var firstLaunch = true
     private val colors =RandomColors()
-    override fun getItemCount() = cellList.size
+    private var toggleRowAnimation = false
     private var editedTask =Task(0, "", 0, false)
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
     private var itemTouchHelperCallback: SimpleCallback=
@@ -50,6 +50,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(view.recycler_view)
     }
 
+    override fun getItemCount() = cellList.size
     override fun getItemViewType(position: Int): Int { return if (position == cellList.lastIndex) 1 else 2 }
 
 
@@ -81,50 +82,50 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             if (toggleRowAnimation && position != cellList.lastIndex - 1) {
 
 
-                    val animation=TranslateAnimation(0F, 0F, -250F, -250F)
-                    animation.fillAfter=true
-                    holder.itemView.startAnimation(animation)
+                    val startRowAnimation=TranslateAnimation(0F, 0F, -250F, -250F)
+                 startRowAnimation.fillAfter=true
+                    holder.itemView.startAnimation(startRowAnimation)
 
                 Handler().postDelayed({
-                    val animation=TranslateAnimation(0F, 0F, -250F, 0F)
-                    animation.fillAfter=true
-                    animation.duration=400
-                    holder.itemView.startAnimation(animation)
+                    val rowAnimation=TranslateAnimation(0F, 0F, -250F, 0F)
+                    rowAnimation.fillAfter=true
+                    rowAnimation.duration=400
+                    holder.itemView.startAnimation(rowAnimation)
                 }, ((cellList.size - position  ) * 10).toLong())
 
 
             } else if (toggleRowAnimation && position == cellList.lastIndex - 1) {
 
-                val animation=TranslateAnimation(0F, 0F, -300F, 50F)
-                animation.fillAfter=true
-                holder.itemView.startAnimation(animation)
-                animation.duration=250
+                val firstAnimation=TranslateAnimation(0F, 0F, -300F, 50F)
+                firstAnimation.fillAfter=true
+                holder.itemView.startAnimation(firstAnimation)
+                firstAnimation.duration=250
                 holder.itemView.scaleX = 0F
                 holder.itemView.scaleY = 0F
                 holder.itemView.animate().scaleX(1.25F).duration = 250
                 holder.itemView.animate().scaleY(1.25F).duration = 250
 
                 Handler().postDelayed({
-                    val animation=TranslateAnimation(0F, 0F, 50F, -100F)
-                    holder.itemView.startAnimation(animation)
-                    animation.duration=250
+                    val secondAnimation=TranslateAnimation(0F, 0F, 50F, -100F)
+                    holder.itemView.startAnimation(secondAnimation)
+                    secondAnimation.duration=250
                     holder.itemView.animate().scaleY(0.8F).duration = 250
                     holder.itemView.animate().scaleX(0.8F).duration = 250
 
                 },  250)
                 Handler().postDelayed({
-                    val animation=TranslateAnimation(0F, 0F, -100F, 25F)
-                    holder.itemView.startAnimation(animation)
-                    animation.duration=500
+                    val thirdAnimation=TranslateAnimation(0F, 0F, -100F, 25F)
+                    holder.itemView.startAnimation(thirdAnimation)
+                    thirdAnimation.duration=500
                     holder.itemView.animate().scaleY(1.1F).duration = 500
                     holder.itemView.animate().scaleX(1.1F).duration = 500
 
 
                 },  500)
                 Handler().postDelayed({
-                    val animation=TranslateAnimation(0F, 0F, 25F, 0F)
-                    holder.itemView.startAnimation(animation)
-                    animation.duration=250
+                    val forthAnimation=TranslateAnimation(0F, 0F, 25F, 0F)
+                    holder.itemView.startAnimation(forthAnimation)
+                    forthAnimation.duration=250
                     holder.itemView.animate().scaleY(1F).duration = 400
                     holder.itemView.animate().scaleX(1F).duration = 400
 
