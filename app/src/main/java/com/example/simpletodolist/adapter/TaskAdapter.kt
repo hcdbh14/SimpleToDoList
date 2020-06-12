@@ -210,7 +210,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
             }
 
-            if (cellList.size > 2) {
+            if (cellList.size > 2 || infoOn) {
                 holder.itemView.infoButton.visibility=View.VISIBLE
             holder.itemView.infoButton.setOnClickListener {
 
@@ -220,11 +220,15 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     background.alpha=0F
 
                     runBlocking { loadData() }
+                    view.recycler_view.scrollToPosition(cellList.lastIndex)
 
                 } else {
                     infoOn=true
                     holder.itemView.infoButton.alpha=1F
                     view.closeKeyboard()
+                    val lastTask = cellList.last()
+                    cellList.clear()
+                    cellList.add(lastTask)
 
                     background.alpha=0F
                     val animation1=AlphaAnimation(0F, 1F)
@@ -232,7 +236,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     background.alpha=1F
                     background.startAnimation(animation1)
 
-                    runBlocking { loadData() }
+                    this.notifyDataSetChanged()
                 }
             }
             } else {
