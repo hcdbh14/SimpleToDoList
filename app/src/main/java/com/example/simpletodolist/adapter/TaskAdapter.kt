@@ -210,13 +210,13 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
             }
 
-            if (cellList.size > 2 || infoOn) {
+            if (cellList.size > 1 || infoOn) {
                 holder.itemView.infoButton.visibility=View.VISIBLE
             holder.itemView.infoButton.setOnClickListener {
 
                 if (infoOn) {
                     infoOn=false
-                    holder.itemView.infoButton.alpha=0.3F
+                    holder.itemView.infoButton.alpha=1F
                     background.alpha=0F
 
                     runBlocking { loadData() }
@@ -224,7 +224,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
                 } else {
                     infoOn=true
-                    holder.itemView.infoButton.alpha=1F
+                    holder.itemView.infoButton.alpha=0.3F
                     view.closeKeyboard()
                     val lastTask = cellList.last()
                     cellList.clear()
