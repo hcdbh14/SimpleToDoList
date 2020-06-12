@@ -44,7 +44,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 runBlocking {  deleteTask(taskToRemove, viewHolder.adapterPosition) }
             }
             override fun getSwipeDirs (recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-                    if (viewHolder.adapterPosition == cellList.lastIndex) return 0
+                    if (viewHolder.adapterPosition == cellList.lastIndex || infoOn) return 0
                 return super.getSwipeDirs(recyclerView, viewHolder)
             }
         }
@@ -78,6 +78,17 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
         if (position != cellList.lastIndex) {
+
+            if (infoOn) {
+                this.view.recycler_view.isEnabled = false
+                holder.itemView.alpha= 0F
+                holder.itemView.isEnabled = false
+            } else {
+                holder.itemView.alpha= 1F
+                if (!cellList[position].locked) {
+                    holder.itemView.isEnabled = true
+                }
+            }
             val currentItem=cellList[position]
             holder.editText.isEnabled = false
             holder.itemView.background=roundCorners(currentItem.color)
@@ -196,9 +207,11 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 if (infoOn) {
                     infoOn = false
                     holder.itemView.infoButton.alpha = 0.3F
+                    this.notifyDataSetChanged()
                 } else {
                     infoOn = true
                     holder.itemView.infoButton.alpha = 1F
+                    this.notifyDataSetChanged()
                 }
             }
         }
