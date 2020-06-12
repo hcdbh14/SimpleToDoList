@@ -3,6 +3,7 @@ package com.example.simpletodolist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,18 +21,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
+        val background = this.findViewById<View>(R.id.activity_intro)
         runBlocking { recycler_view.adapter=
             TaskAdapter(
                 loadTasks(),
-                recycler_view
+                recycler_view,
+                background
             )
         }
         supportActionBar?.hide()
         val linearLayoutManager=LinearLayoutManager(this)
         linearLayoutManager.reverseLayout=true
         linearLayoutManager.stackFromEnd=true
+
         recycler_view.layoutManager=linearLayoutManager
         recycler_view.setHasFixedSize(true)
         recycler_view.setOnTouchListener { v, _ ->
