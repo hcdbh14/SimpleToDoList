@@ -7,6 +7,11 @@
     tools:context=".MainActivity">
 
 
+    <include
+        layout="@layout/activity_intro"
+        android:id="@+id/includedLayout"
+       />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
