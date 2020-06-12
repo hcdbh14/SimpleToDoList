@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">SimpleToDoList</string>
+    <string name="app_name">Simple Task</string>
     <string name="add_new_task_button">add new task button</string>
+    <string name="swipeIntro">Swipe left or right to remove tasks</string>
+    <string name="introText">Write your ideas, plans or simple tasks on each card that you add.</string>
 </resources>

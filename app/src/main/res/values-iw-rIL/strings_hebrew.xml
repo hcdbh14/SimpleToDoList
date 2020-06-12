@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">מטלה בוצעה</string>
+    <string name="add_new_task_button">add new task button</string>
+    <string name="swipeIntro">החליקו שמאלה או ימינה כדי לסגור מטלות</string>
+    <string name="introText">תרשמו על הכרטסות משימות, תוכניות או רעיונות שעולות לכם לראש</string>
+</resources>
