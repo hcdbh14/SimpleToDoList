@@ -9,11 +9,12 @@
 
     <EditText
         android:id="@+id/editTextID"
-        android:textSize="22sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
-        android:gravity="center"
         android:layout_gravity="center"
-        android:textColor="@drawable/edit_text_selector" />
+        android:background="@null"
+        android:backgroundTint="#FFFFFF"
+        android:gravity="center"
+        android:textColor="@drawable/edit_text_selector"
+        android:textSize="22sp" />
 </androidx.cardview.widget.CardView>
