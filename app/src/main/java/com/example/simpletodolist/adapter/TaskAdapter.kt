@@ -30,6 +30,7 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
+    private var infoOn = false
     private var isOpened=false
     private val colors =RandomColors()
     private var toggleRowAnimation = false
@@ -190,6 +191,15 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 }
                 runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
+            }
+            holder.itemView.infoButton.setOnClickListener {
+                if (infoOn) {
+                    infoOn = false
+                    holder.itemView.infoButton.alpha = 0.3F
+                } else {
+                    infoOn = true
+                    holder.itemView.infoButton.alpha = 1F
+                }
             }
         }
 
