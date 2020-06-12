@@ -180,7 +180,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
             }
-            
+
             if (infoOn) {
                 holder.itemView.visibility=View.GONE
             } else {
