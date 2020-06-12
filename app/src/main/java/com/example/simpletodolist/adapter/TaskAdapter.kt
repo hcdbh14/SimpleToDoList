@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -28,7 +29,8 @@ import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
 
 
-class TaskAdapter(private var cellList: MutableList<Task>, private val view: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
 
     private var infoOn = false
     private var isOpened=false
@@ -79,15 +81,11 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
         if (position != cellList.lastIndex) {
 
-            if (infoOn) {
-                this.view.recycler_view.isEnabled = false
-                holder.itemView.alpha= 0F
-                holder.itemView.isEnabled = false
+
+            if(cellList.size > 2 && !infoOn) {
+                background.alpha = 0F
             } else {
-                holder.itemView.alpha= 1F
-                if (!cellList[position].locked) {
-                    holder.itemView.isEnabled = true
-                }
+                background.alpha = 1F
             }
             val currentItem=cellList[position]
             holder.editText.isEnabled = false
@@ -151,7 +149,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
                 holder.editText.isEnabled = true
                 holder.editText.setOnTouchListener { v, event ->
-                    view.recycler_view.reopenKeyboard()
+                    view.recycler_view.closeKeyboard()
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                                 holder.editText.doAfterTextChanged {
@@ -167,6 +165,13 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     v?.onTouchEvent(event) ?: true
                 }
             }
+
+
+            if (infoOn) {
+                holder.itemView.visibility=View.GONE
+            } else {
+                    holder.itemView.visibility=View.VISIBLE
+            }
         } else {
 
             val circleShape=GradientDrawable()
@@ -181,6 +186,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
 
             holder.itemView.addButton.setOnClickListener {
+                infoOn = false
             toggleRowAnimation = true
                 Handler().postDelayed({
                    toggleRowAnimation = false
@@ -203,16 +209,34 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 runBlocking { loadData() }
                 view.recycler_view.scrollToPosition(cellList.lastIndex)
             }
+
+            if (cellList.size > 2) {
+                holder.itemView.infoButton.visibility=View.VISIBLE
             holder.itemView.infoButton.setOnClickListener {
+
                 if (infoOn) {
-                    infoOn = false
-                    holder.itemView.infoButton.alpha = 0.3F
-                    this.notifyDataSetChanged()
+                    infoOn=false
+                    holder.itemView.infoButton.alpha=0.3F
+                    background.alpha=0F
+
+                    runBlocking { loadData() }
+
                 } else {
-                    infoOn = true
-                    holder.itemView.infoButton.alpha = 1F
-                    this.notifyDataSetChanged()
+                    infoOn=true
+                    holder.itemView.infoButton.alpha=1F
+                    view.closeKeyboard()
+
+                    background.alpha=0F
+                    val animation1=AlphaAnimation(0F, 1F)
+                    animation1.duration=1000
+                    background.alpha=1F
+                    background.startAnimation(animation1)
+
+                    runBlocking { loadData() }
                 }
+            }
+            } else {
+                holder.itemView.infoButton.visibility=View.GONE
             }
         }
 
@@ -235,7 +259,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
     }
 
-    private fun View.reopenKeyboard() {
+    private fun View.closeKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
