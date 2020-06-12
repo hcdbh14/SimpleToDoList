@@ -2,9 +2,12 @@ package com.example.simpletodolist.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Handler
+import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -14,6 +17,7 @@ import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -29,7 +33,7 @@ import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
 
 
-class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View,private val context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
 
     private var infoOn = false
@@ -76,6 +80,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
@@ -166,7 +171,16 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 }
             }
 
-
+            holder.itemView.alarmButton.setOnClickListener {
+                runBlocking {   view.closeKeyboard() }
+                val intent: Intent=Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.Events.TITLE, holder.editText.text.toString())
+                println(cellList[position].task)
+                intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }
+            
             if (infoOn) {
                 holder.itemView.visibility=View.GONE
             } else {
