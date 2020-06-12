@@ -2,6 +2,7 @@ package com.example.simpletodolist.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.view.LayoutInflater
@@ -158,15 +159,16 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
             val circleShape=GradientDrawable()
             circleShape.setColor(cellList.last().color.toInt())
-            circleShape.cornerRadius=260f
-            holder.itemView.imageID.background=circleShape
+            circleShape.cornerRadius=360f
+            circleShape.setStroke(10, Color.DKGRAY)
+            holder.itemView.addButton.background=circleShape
             if (toggleRowAnimation) {
-                holder.itemView.scaleX = 0.1f
-                holder.itemView.scaleY = 0.1f
-                holder.itemView.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=1000
+                holder.itemView.addButton.scaleX = 0.1f
+                holder.itemView.addButton.scaleY = 0.1f
+                holder.itemView.addButton.animate().scaleXBy(0.8F).scaleYBy(0.8F).duration=1000
             }
 
-            holder.itemView.imageID.setOnClickListener {
+            holder.itemView.addButton.setOnClickListener {
             toggleRowAnimation = true
                 Handler().postDelayed({
                    toggleRowAnimation = false
@@ -176,7 +178,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     runBlocking {
                         db.roomNoteDao().writeTask(editedTask) } }
                 runBlocking {
-                    holder.itemView.imageID.animate().start()
+                    holder.itemView.addButton.animate().start()
                     db.roomNoteDao().writeTask(
                         Task(
                             System.currentTimeMillis(),
@@ -239,7 +241,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             if (type == 1) {
                 this.editText = TaskView.editTextID
             } else {
-                this.imageView = TaskView.imageID
+                this.imageView = TaskView.addButton
             }
         }
 

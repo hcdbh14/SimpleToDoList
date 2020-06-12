@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-
         android:background="@drawable/border"
         android:gravity="center"
         android:textColor="@drawable/edit_text_selector"
