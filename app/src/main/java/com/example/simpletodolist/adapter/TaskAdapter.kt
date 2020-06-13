@@ -177,14 +177,10 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 }
             }
 
-            holder.itemView.featherButton.setOnTouchListener {  v, event ->
-                view.recycler_view.closeKeyboard()
-
-                            featherEdit = currentItem.id
-                            notifyItemChanged(cellList.indexOf(currentItem))
-
-
-                v?.onTouchEvent(event) ?: true
+            holder.itemView.featherButton.setOnClickListener {
+                runBlocking {view.closeKeyboard()  }
+                featherEdit = currentItem.id
+                notifyItemChanged(cellList.indexOf(currentItem))
             }
 
 
