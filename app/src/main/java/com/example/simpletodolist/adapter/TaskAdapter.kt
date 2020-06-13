@@ -217,10 +217,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 Handler().postDelayed({
                    toggleRowAnimation = false
                 }, 1000)
-
-                if (isOpened) {
-                    runBlocking {
-                        db.roomNoteDao().writeTask(editedTask) } }
                 runBlocking {
                     holder.itemView.addButton.animate().start()
                     db.roomNoteDao().writeTask(
@@ -283,7 +279,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     println("open")
                 } else if (isOpened) {
                     isOpened=false
-                    runBlocking {  db.roomNoteDao().writeTask(editedTask) }
+                    if(featherEdit == editedTask.id) {
+                        runBlocking { db.roomNoteDao().writeTask(editedTask) }
+                    }
                     featherEdit=0
                     println("closed")
                 }
