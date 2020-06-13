@@ -35,7 +35,6 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View,private val context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-
     private var infoOn = false
     private var isOpened=false
     private val colors =RandomColors()
@@ -150,6 +149,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
 
 
+
             if (!currentItem.locked && currentItem.task =="") {
 
                 holder.editText.isEnabled = true
@@ -165,6 +165,36 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                                                 currentItem.color,
                                                 locked=true
                                             )
+                            }
+                    }
+                    v?.onTouchEvent(event) ?: true
+                }
+            } else {
+
+                holder.itemView.featherButton.setOnTouchListener {v, event ->
+                    holder.editText.isEnabled = true
+                    view.recycler_view.closeKeyboard()
+                    when (event?.action) {
+                        MotionEvent.ACTION_DOWN ->
+                            holder.editText.doAfterTextChanged {
+
+                                if (currentItem.task != holder.editText.text.toString() && holder.editText.text.toString() != "") {
+                                    editedTask=
+                                        Task(
+                                            currentItem.id,
+                                            holder.editText.text.toString(),
+                                            currentItem.color,
+                                            locked=true
+                                        )
+                                } else if (holder.editText.text.toString() == "") {
+                                    editedTask=
+                                        Task(
+                                            currentItem.id,
+                                            holder.editText.text.toString(),
+                                            currentItem.color,
+                                            locked=false
+                                        )
+                            }
                             }
                     }
                     v?.onTouchEvent(event) ?: true
@@ -200,6 +230,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
 
             holder.itemView.addButton.setOnClickListener {
+                view.closeKeyboard()
                 infoOn = false
             toggleRowAnimation = true
                 Handler().postDelayed({
