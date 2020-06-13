@@ -159,7 +159,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                                 holder.editText.doAfterTextChanged {
-                                    if (featherEdit == currentItem.id ) {
+                                    if (featherEdit == currentItem.id && holder.editText.text.toString() != "") {
                                         editedTask =
                                             Task(
                                                 currentItem.id,
@@ -167,6 +167,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                                                 currentItem.color,
                                                 locked=true
                                             )
+                                        println(holder.editText.text.toString())
                                     }
                             }
                     }
