@@ -1,4 +1,4 @@
-package com.example.simpletodolist
+package task_complete.example.simpletodolist
 
 import org.junit.Test
 

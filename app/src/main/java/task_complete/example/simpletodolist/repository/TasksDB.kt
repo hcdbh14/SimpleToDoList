@@ -1,11 +1,11 @@
-package com.example.simpletodolist.repository
+package task_complete.example.simpletodolist.repository
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.simpletodolist.model.Task
-import com.example.simpletodolist.model.writeTasks
+import task_complete.example.simpletodolist.model.Task
+import task_complete.example.simpletodolist.model.writeTasks
 
 private const val DATABASE = "tasks"
 
@@ -27,14 +27,20 @@ abstract class RoomNoteDatabase : RoomDatabase() {
         private var instance: RoomNoteDatabase? = null
 
         fun getInstance(context: Context): RoomNoteDatabase {
-            return instance ?: synchronized(this) {
+            return instance
+                ?: synchronized(this) {
                 instance
-                    ?: buildDatabase(context).also { instance = it }
+                    ?: buildDatabase(
+                        context
+                    )
+                        .also { instance= it }
             }
         }
 
         private fun buildDatabase(context: Context): RoomNoteDatabase {
-            return Room.databaseBuilder(context, RoomNoteDatabase::class.java, DATABASE)
+            return Room.databaseBuilder(context, RoomNoteDatabase::class.java,
+                DATABASE
+            )
                 .build()
         }
     }

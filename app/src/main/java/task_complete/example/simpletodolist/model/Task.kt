@@ -1,4 +1,4 @@
-package com.example.simpletodolist.model
+package task_complete.example.simpletodolist.model
 
 import androidx.room.*
 
@@ -10,7 +10,7 @@ import androidx.room.*
 data class Task(
     @PrimaryKey(autoGenerate = false)
     var id: Long = System.currentTimeMillis(),
-    val task: String,
+    var task: String,
     val color: Long,
     var locked: Boolean
 )

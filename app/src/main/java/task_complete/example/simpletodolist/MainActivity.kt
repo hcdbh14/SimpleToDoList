@@ -1,4 +1,4 @@
-package com.example.simpletodolist
+package task_complete.example.simpletodolist
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,10 +7,11 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.simpletodolist.adapter.TaskAdapter
-import com.example.simpletodolist.model.RandomColors
-import com.example.simpletodolist.model.Task
-import com.example.simpletodolist.repository.RoomNoteDatabase
+import com.kenny.task_complete.R
+import task_complete.example.simpletodolist.adapter.TaskAdapter
+import task_complete.example.simpletodolist.model.RandomColors
+import task_complete.example.simpletodolist.model.Task
+import task_complete.example.simpletodolist.repository.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.runBlocking
 
@@ -52,7 +53,8 @@ class MainActivity : AppCompatActivity() {
             val task =Task(
                 System.currentTimeMillis(),
                 "",
-                RandomColors().getRandomColor(),
+                RandomColors()
+                    .getRandomColor(),
                 locked=false
             )
             db.roomNoteDao().writeTask(task)

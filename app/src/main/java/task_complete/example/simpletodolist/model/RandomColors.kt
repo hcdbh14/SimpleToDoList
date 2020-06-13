@@ -1,4 +1,4 @@
-package com.example.simpletodolist.model
+package task_complete.example.simpletodolist.model
 
 class RandomColors {
 

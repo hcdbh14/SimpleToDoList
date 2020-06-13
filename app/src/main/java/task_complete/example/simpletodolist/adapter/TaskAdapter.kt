@@ -1,4 +1,4 @@
-package com.example.simpletodolist.adapter
+package task_complete.example.simpletodolist.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,17 +23,17 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simpletodolist.R
-import com.example.simpletodolist.model.RandomColors
-import com.example.simpletodolist.model.Task
-import com.example.simpletodolist.repository.RoomNoteDatabase
+import com.kenny.task_complete.R
+import task_complete.example.simpletodolist.model.RandomColors
+import task_complete.example.simpletodolist.model.Task
+import task_complete.example.simpletodolist.repository.RoomNoteDatabase
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.add_cell.view.*
 import kotlinx.android.synthetic.main.task_view.view.*
 import kotlinx.coroutines.runBlocking
 
 
-class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View,private val context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View, private val context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
 
     private var featherEdit: Long = 0
@@ -42,7 +42,8 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
     private val colors =RandomColors()
     private var isAddingNewTask = false
     private var toggleRowAnimation = false
-    private var editedTask =Task(0, "", 0, false)
+    private var editedTask =
+        Task(0, "", 0, false)
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
     private var itemTouchHelperCallback: SimpleCallback=
         object : SimpleCallback(0, ItemTouchHelper.LEFT  or ItemTouchHelper.RIGHT ) {
