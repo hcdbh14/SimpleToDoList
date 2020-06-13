@@ -52,7 +52,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 runBlocking {  deleteTask(taskToRemove, viewHolder.adapterPosition) }
             }
             override fun getSwipeDirs (recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-                    if (viewHolder.adapterPosition == cellList.lastIndex || infoOn) return 0
+                if (viewHolder.adapterPosition == cellList.lastIndex || infoOn) return 0
                 return super.getSwipeDirs(recyclerView, viewHolder)
             }
         }
@@ -103,9 +103,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             if (toggleRowAnimation && position != cellList.lastIndex - 1) {
 
 
-                    val startRowAnimation=TranslateAnimation(0F, 0F, -250F, -250F)
-                 startRowAnimation.fillAfter=true
-                    holder.itemView.startAnimation(startRowAnimation)
+                val startRowAnimation=TranslateAnimation(0F, 0F, -250F, -250F)
+                startRowAnimation.fillAfter=true
+                holder.itemView.startAnimation(startRowAnimation)
 
                 Handler().postDelayed({
                     val rowAnimation=TranslateAnimation(0F, 0F, -250F, 0F)
@@ -153,39 +153,37 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 },  1000)
             }
 
-
+            holder.itemView.featherButton.setOnClickListener {
+                featherEdit = currentItem.id
+                runBlocking {view.closeKeyboard()  }
+                notifyItemChanged(cellList.indexOf(currentItem))
+            }
 
             if (featherEdit == currentItem.id) {
 
                 holder.editText.isEnabled = true
+                holder.editText.isFocusableInTouchMode=true
+                holder.editText.requestFocus()
                 holder.editText.setOnTouchListener { v, event ->
                     view.recycler_view.closeKeyboard()
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
-                                holder.editText.doAfterTextChanged {
-                                    if (featherEdit == currentItem.id && holder.editText.text.toString() != "") {
-                                        editedTask =
-                                            Task(
-                                                currentItem.id,
-                                                holder.editText.text.toString(),
-                                                currentItem.color,
-                                                locked=true
-                                            )
-                                        println(holder.editText.text.toString())
-                                    }
+                            holder.editText.doAfterTextChanged {
+                                if (featherEdit == currentItem.id && holder.editText.text.toString() != "") {
+                                    editedTask =
+                                        Task(
+                                            currentItem.id,
+                                            holder.editText.text.toString(),
+                                            currentItem.color,
+                                            locked=true
+                                        )
+                                    println(holder.editText.text.toString())
+                                }
                             }
                     }
                     v?.onTouchEvent(event) ?: true
                 }
             }
-
-            holder.itemView.featherButton.setOnClickListener {
-                runBlocking {view.closeKeyboard()  }
-                featherEdit = currentItem.id
-                notifyItemChanged(cellList.indexOf(currentItem))
-            }
-
-
 
 
             holder.itemView.alarmButton.setOnClickListener {
@@ -201,7 +199,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             if (infoOn) {
                 holder.itemView.visibility=View.GONE
             } else {
-                    holder.itemView.visibility=View.VISIBLE
+                holder.itemView.visibility=View.VISIBLE
             }
 
         } else {
@@ -221,9 +219,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 isAddingNewTask = true
                 view.closeKeyboard()
                 infoOn = false
-            toggleRowAnimation = true
+                toggleRowAnimation = true
                 Handler().postDelayed({
-                   toggleRowAnimation = false
+                    toggleRowAnimation = false
                 }, 1000)
                 runBlocking {
                     holder.itemView.addButton.animate().start()
@@ -244,33 +242,33 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
             if (cellList.size > 1 || infoOn) {
                 holder.itemView.infoButton.visibility=View.VISIBLE
-            holder.itemView.infoButton.setOnClickListener {
+                holder.itemView.infoButton.setOnClickListener {
 
-                if (infoOn) {
-                    infoOn=false
-                    holder.itemView.infoButton.alpha=1F
-                    background.alpha=0F
+                    if (infoOn) {
+                        infoOn=false
+                        holder.itemView.infoButton.alpha=1F
+                        background.alpha=0F
 
-                    runBlocking { loadData() }
-                    view.recycler_view.scrollToPosition(cellList.lastIndex)
+                        runBlocking { loadData() }
+                        view.recycler_view.scrollToPosition(cellList.lastIndex)
 
-                } else {
-                    infoOn=true
-                    holder.itemView.infoButton.alpha=0.3F
-                    view.closeKeyboard()
-                    val lastTask = cellList.last()
-                    cellList.clear()
-                    cellList.add(lastTask)
+                    } else {
+                        infoOn=true
+                        holder.itemView.infoButton.alpha=0.3F
+                        view.closeKeyboard()
+                        val lastTask = cellList.last()
+                        cellList.clear()
+                        cellList.add(lastTask)
 
-                    background.alpha=0F
-                    val animation1=AlphaAnimation(0F, 1F)
-                    animation1.duration=1000
-                    background.alpha=1F
-                    background.startAnimation(animation1)
+                        background.alpha=0F
+                        val animation1=AlphaAnimation(0F, 1F)
+                        animation1.duration=1000
+                        background.alpha=1F
+                        background.startAnimation(animation1)
 
-                    this.notifyDataSetChanged()
+                        this.notifyDataSetChanged()
+                    }
                 }
-            }
             } else {
                 holder.itemView.infoButton.visibility=View.GONE
             }
@@ -307,6 +305,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         this.cellList=data
         this.notifyDataSetChanged()
         if (isAddingNewTask) {
+            featherEdit = cellList[cellList.lastIndex - 1].id
             view.recycler_view.scrollToPosition(cellList.lastIndex)
         }
         isAddingNewTask = false
@@ -320,10 +319,10 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
     }
 
 
-     class TaskViewHolder(TaskView: View, type: Int) : RecyclerView.ViewHolder(TaskView) {
+    class TaskViewHolder(TaskView: View, type: Int) : RecyclerView.ViewHolder(TaskView) {
 
-         lateinit var editText: EditText
-         private lateinit var imageView: ImageView
+        lateinit var editText: EditText
+        private lateinit var imageView: ImageView
 
         init {
             if (type == 1) {
