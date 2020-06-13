@@ -228,8 +228,12 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                         )
                     )
                 }
-                runBlocking { loadData() }
-                view.recycler_view.scrollToPosition(cellList.lastIndex)
+                if(isOpened) {
+                    view.recycler_view.scrollToPosition(cellList.lastIndex)
+                } else {
+                    runBlocking { loadData() }
+                    view.recycler_view.scrollToPosition(cellList.lastIndex)
+                }
             }
 
             if (cellList.size > 1 || infoOn) {
@@ -283,6 +287,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                         runBlocking { db.roomNoteDao().writeTask(editedTask) }
                     }
                     featherEdit=0
+                    runBlocking { loadData() }
                     println("closed")
                 }
             }
