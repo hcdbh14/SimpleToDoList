@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
             TaskAdapter(
                 loadTasks(),
                 recycler_view,
-                background
+                background,
+                applicationContext
             )
         }
         supportActionBar?.hide()

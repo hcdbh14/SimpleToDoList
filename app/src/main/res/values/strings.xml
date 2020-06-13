@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Simple Task</string>
+    <string name="app_name">Task Complete</string>
     <string name="add_new_task_button">add new task button</string>
     <string name="swipeIntro">Swipe left or right to close tasks</string>
     <string name="introText">Write daily tasks, plans or any ideas that come to your mind</string>
