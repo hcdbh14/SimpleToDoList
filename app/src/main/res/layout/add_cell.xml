@@ -27,6 +27,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/add" />
 
+
     <ImageView
         android:id="@+id/infoButton"
         android:layout_width="41dp"

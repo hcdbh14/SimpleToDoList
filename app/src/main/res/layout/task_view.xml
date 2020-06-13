@@ -27,5 +27,14 @@
         android:paddingTop="10dp"
         app:srcCompat="@drawable/alarm" />
 
+    <ImageView
+        android:id="@+id/featherButton"
+        android:layout_gravity="end"
+        android:layout_width="41dp"
+        android:layout_height="38dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        app:srcCompat="@drawable/feather" />
+
 
 </androidx.cardview.widget.CardView>

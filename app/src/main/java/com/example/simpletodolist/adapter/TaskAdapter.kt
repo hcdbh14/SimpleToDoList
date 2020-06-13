@@ -151,7 +151,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
 
 
-            if (!currentItem.locked && currentItem.task =="" || featherEdit == currentItem.id) {
+            if (featherEdit == currentItem.id) {
 
                 holder.editText.isEnabled = true
                 holder.editText.setOnTouchListener { v, event ->
@@ -159,6 +159,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                                 holder.editText.doAfterTextChanged {
+                                    if (featherEdit == currentItem.id ) {
                                         editedTask =
                                             Task(
                                                 currentItem.id,
@@ -166,6 +167,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                                                 currentItem.color,
                                                 locked=true
                                             )
+                                    }
                             }
                     }
                     v?.onTouchEvent(event) ?: true
@@ -278,8 +280,8 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     println("open")
                 } else if (isOpened) {
                     isOpened=false
-                    featherEdit=0
                     runBlocking {  db.roomNoteDao().writeTask(editedTask) }
+                    featherEdit=0
                     println("closed")
                 }
             }
