@@ -93,7 +93,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 background.alpha = 1F
             }
             val currentItem=cellList[position]
-            holder.editText.isEnabled = false
+            if (currentItem.id != featherEdit) {
+                holder.editText.isEnabled = false
+            }
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
             if (toggleRowAnimation && position != cellList.lastIndex - 1) {
