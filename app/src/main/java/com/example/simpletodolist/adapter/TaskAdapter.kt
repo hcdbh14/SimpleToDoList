@@ -177,10 +177,18 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 }
             }
 
-            holder.itemView.featherButton.setOnClickListener {
-                featherEdit = currentItem.id
-                notifyItemChanged(cellList.indexOf(currentItem))
+            holder.itemView.featherButton.setOnTouchListener {  v, event ->
+                view.recycler_view.closeKeyboard()
+
+                            featherEdit = currentItem.id
+                            notifyItemChanged(cellList.indexOf(currentItem))
+
+
+                v?.onTouchEvent(event) ?: true
             }
+
+
+
 
             holder.itemView.alarmButton.setOnClickListener {
                 runBlocking {   view.closeKeyboard() }
@@ -197,6 +205,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             } else {
                     holder.itemView.visibility=View.VISIBLE
             }
+
         } else {
 
             val circleShape=GradientDrawable()
@@ -228,9 +237,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                         )
                     )
                 }
-                if(isOpened) {
-                    view.recycler_view.scrollToPosition(cellList.lastIndex)
-                } else {
+                if(!isOpened) {
                     runBlocking { loadData() }
                     view.recycler_view.scrollToPosition(cellList.lastIndex)
                 }
@@ -303,6 +310,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         println("saved")
         this.cellList=data
         this.notifyDataSetChanged()
+        view.recycler_view.scrollToPosition(cellList.lastIndex)
     }
 
 
