@@ -35,10 +35,12 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View,private val context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
+
     private var featherEdit: Long = 0
     private var infoOn = false
     private var isOpened=false
     private val colors =RandomColors()
+    private var isAddingNewTask = false
     private var toggleRowAnimation = false
     private var editedTask =Task(0, "", 0, false)
     private val db = RoomNoteDatabase.getInstance(AppCompatActivity())
@@ -216,6 +218,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
             }
 
             holder.itemView.addButton.setOnClickListener {
+                isAddingNewTask = true
                 view.closeKeyboard()
                 infoOn = false
             toggleRowAnimation = true
@@ -286,10 +289,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     println("open")
                 } else if (isOpened) {
                     isOpened=false
-                    if(featherEdit == editedTask.id) {
-                        runBlocking { db.roomNoteDao().writeTask(editedTask) }
-                    }
-                    featherEdit=0
+                    runBlocking { db.roomNoteDao().writeTask(editedTask) }
                     runBlocking { loadData() }
                     println("closed")
                 }
@@ -306,7 +306,10 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         println("saved")
         this.cellList=data
         this.notifyDataSetChanged()
-        view.recycler_view.scrollToPosition(cellList.lastIndex)
+        if (isAddingNewTask) {
+            view.recycler_view.scrollToPosition(cellList.lastIndex)
+        }
+        isAddingNewTask = false
     }
 
 
