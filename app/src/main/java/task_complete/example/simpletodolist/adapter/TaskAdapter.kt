@@ -35,8 +35,6 @@ import kotlinx.coroutines.runBlocking
 
 class TaskAdapter(private var cellList: MutableList<Task>, private val view: View, private val background: View, private val context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-
-    private var featherEdit: Long = 0
     private var infoOn = false
     private var isOpened=false
     private val colors =RandomColors()
@@ -90,15 +88,16 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         if (position != cellList.lastIndex) {
 
 
-            if(cellList.size > 2 && !infoOn) {
+            if(cellList.size > 1 && !infoOn) {
                 background.alpha = 0F
             } else {
                 background.alpha = 1F
             }
             val currentItem=cellList[position]
-            if (currentItem.id != featherEdit) {
-                holder.editText.isEnabled = false
-            }
+
+//            if (currentItem.id != featherEdit) {
+//                holder.editText.isEnabled = false
+//            }
             holder.itemView.background=roundCorners(currentItem.color)
             holder.editText.setText(currentItem.task)
             if (toggleRowAnimation && position != cellList.lastIndex - 1) {
@@ -154,13 +153,12 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 },  1000)
             }
 
-            holder.itemView.featherButton.setOnClickListener {
-                featherEdit = currentItem.id
-                runBlocking {view.closeKeyboard()  }
-                notifyItemChanged(cellList.indexOf(currentItem))
-            }
+//            holder.itemView.featherButton.setOnClickListener {
+//                featherEdit = currentItem.id
+//                runBlocking {view.closeKeyboard()  }
+//                notifyItemChanged(cellList.indexOf(currentItem))
+//            }
 
-            if (featherEdit == currentItem.id) {
 
                 holder.editText.isEnabled = true
                 holder.editText.isFocusableInTouchMode=true
@@ -170,7 +168,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                             holder.editText.doAfterTextChanged {
-                                if (featherEdit == currentItem.id && holder.editText.text.toString() != "") {
+                                if (holder.editText.isFocused) {
                                     editedTask =
                                         Task(
                                             currentItem.id,
@@ -184,7 +182,7 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     }
                     v?.onTouchEvent(event) ?: true
                 }
-            }
+
 
 
             holder.itemView.alarmButton.setOnClickListener {
@@ -306,7 +304,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
         this.cellList=data
         this.notifyDataSetChanged()
         if (isAddingNewTask) {
-            featherEdit = cellList[cellList.lastIndex - 1].id
             view.recycler_view.scrollToPosition(cellList.lastIndex)
         }
         isAddingNewTask = false
