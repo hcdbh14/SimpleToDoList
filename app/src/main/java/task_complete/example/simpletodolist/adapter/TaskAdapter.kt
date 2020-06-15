@@ -153,18 +153,14 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 },  1000)
             }
 
-//            holder.itemView.featherButton.setOnClickListener {
-//                featherEdit = currentItem.id
-//                runBlocking {view.closeKeyboard()  }
-//                notifyItemChanged(cellList.indexOf(currentItem))
-//            }
-
-
                 holder.editText.isEnabled = true
                 holder.editText.isFocusableInTouchMode=true
-                holder.editText.requestFocus()
+
                 holder.editText.setOnTouchListener { v, event ->
-                    view.recycler_view.closeKeyboard()
+
+                    if (editedTask.color.toInt() != 0) {
+                        runBlocking { db.roomNoteDao().writeTask(editedTask) }
+                    }
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN ->
                             holder.editText.doAfterTextChanged {
@@ -176,7 +172,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                                             currentItem.color,
                                             locked=true
                                         )
-                                    println(holder.editText.text.toString())
                                 }
                             }
                     }
@@ -190,7 +185,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                 val intent: Intent=Intent(Intent.ACTION_INSERT)
                     .setData(CalendarContract.Events.CONTENT_URI)
                     .putExtra(CalendarContract.Events.TITLE, holder.editText.text.toString())
-                println(cellList[position].task)
                 intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
             }
@@ -286,7 +280,9 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
                     println("open")
                 } else if (isOpened) {
                     isOpened=false
-                    runBlocking { db.roomNoteDao().writeTask(editedTask) }
+                    if (editedTask.color.toInt() != 0) {
+                        runBlocking { db.roomNoteDao().writeTask(editedTask) }
+                    }
                     runBlocking { loadData() }
                     println("closed")
                 }
@@ -300,7 +296,6 @@ class TaskAdapter(private var cellList: MutableList<Task>, private val view: Vie
 
     private suspend fun loadData() {
         val data = db.roomNoteDao().getTasks().toMutableList()
-        println("saved")
         this.cellList=data
         this.notifyDataSetChanged()
         if (isAddingNewTask) {
